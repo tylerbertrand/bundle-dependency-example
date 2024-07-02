@@ -1,0 +1,20 @@
+plugins {
+    id "java-conventions"
+}
+
+def liferayPortalBundleConfiguration = configurations.create("liferayPortalBundle") {
+    description = "Contains the Liferay portal bundle used indirectly by functional tests"
+    canBeConsumed = false
+}
+
+configurations.add(liferayPortalBundleConfiguration)
+
+dependencies {
+    liferayPortalBundle(files("../bundle"))
+}
+
+tasks.named("test") {
+    inputs.files(liferayPortalBundleConfiguration)
+            .withPropertyName("liferayPortalBundle")
+            .withNormalizer(ClasspathNormalizer)
+}

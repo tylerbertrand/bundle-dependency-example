@@ -1,0 +1,1 @@
+represents a file in the Liferay portal bundle

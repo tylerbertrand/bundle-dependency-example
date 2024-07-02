@@ -1,0 +1,36 @@
+plugins {
+    id "java-conventions"
+}
+
+repositories {
+    // configure a repository containing the Liferay portal bundle
+    exclusiveContent {
+        forRepository {
+            ivy {
+                url = "https://raw.githubusercontent.com/junit-team/junit5-samples/"
+                patternLayout { artifact "r[revision]/junit5-jupiter-starter-gradle/[ext].gradle" }
+                metadataSources { artifact() }
+            }
+        }
+        filter { includeModule "com.liferay.portal", "bundle" }
+    }
+
+    mavenCentral()
+}
+
+def liferayPortalBundleConfiguration = configurations.create("liferayPortalBundle") {
+    description = "Contains the Liferay portal bundle used indirectly by functional tests"
+    canBeConsumed = false
+}
+
+configurations.add(liferayPortalBundleConfiguration)
+
+dependencies {
+    liferayPortalBundle("com.liferay.portal:bundle:5.7.2@build")
+}
+
+tasks.named("test") {
+    inputs.files(liferayPortalBundleConfiguration)
+            .withPropertyName("liferayPortalBundle")
+            .withNormalizer(ClasspathNormalizer)
+}
